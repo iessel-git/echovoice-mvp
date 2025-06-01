@@ -1,0 +1,50 @@
+body {
+  font-family: Arial, sans-serif;
+  padding: 20px;
+  background: #f0f8ff;
+}
+
+h1 {
+  font-size: 24px;
+  color: #007acc;
+}
+
+.grid {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  margin-top: 10px;
+}
+
+.phrase-btn {
+  padding: 10px 20px;
+  background: #007acc;
+  color: white;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+}
+
+.phrase-btn:hover {
+  background: #005fa3;
+}
+
+.input-group {
+  margin-top: 20px;
+}
+
+input {
+  padding: 10px;
+  width: 70%;
+  border: 1px solid #ccc;
+  border-radius: 6px;
+}
+
+button.speak-btn {
+  padding: 10px;
+  margin-left: 10px;
+  background: green;
+  color: white;
+  border: none;
+  border-radius: 6px;
+}
