@@ -1,24 +1,23 @@
-# EchoVoice MVP
+# 🎙️ EchoVoice - Real-Time Assistive Voice App
 
-This is a real-time voice assistant web app that allows users to type or tap phrases and speak them using a male synthetic voice — ideal for use during temporary voice loss (e.g., sore throat).
+EchoVoice enables individuals with sore or impaired speech to communicate in **real-time using their pre-recorded healthy voice**.
 
-## Features
+## 🔥 Features
+- 🧠 Type-to-speak with natural-sounding voice
+- 🔁 Instant phrase buttons for common speech
+- 🌍 Multilingual AI translation (coming soon)
+- 🔄 Realtime voice cloning (planned)
+- 📱 Web-first MVP, mobile apps in roadmap
 
-- Quick phrase buttons
-- Custom typed text
-- Real-time speech output (male voice)
-- Clean responsive design
+## 📸 Screenshot
+![EchoVoice Screenshot](assets/screenshot.png)
 
-## Setup
+## 🚀 Demo
+Live: [https://iessel-git.github.io/echovoice](https://iessel-git.github.io/echovoice)
 
-Open `index.html` in any modern browser.
+## 🛠️ Getting Started
 
-## Future Features
-
-- AI voice cloning (pre-recorded voice)
-- Live speech-to-speech replacement
-- Language translation
-
----
-
-Built for real-world assistive communication.
+```bash
+git clone https://github.com/iessel-git/echovoice.git
+cd echovoice
+open index.html  # Or use VSCode Live Server
