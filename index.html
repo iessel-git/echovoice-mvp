@@ -250,61 +250,79 @@
       }
     });
 
-   // Chart.js Roadmap
+    // Chart.js Roadmap
     const ctx = document.getElementById('roadmapChart').getContext('2d');
+
+    const roadmapData = {
+      labels: ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September'],
+      datasets: [
+        {
+          label: 'Design',
+          data: [1, 1, 0, 0, 0, 0, 0, 0, 0],
+          backgroundColor: '#FF6F61',
+          borderRadius: 6,
+          barPercentage: 0.6,
+        },
+        {
+          label: 'Development',
+          data: [0, 1, 1, 1, 1, 0, 0, 0, 0],
+          backgroundColor: '#17BEBB',
+          borderRadius: 6,
+          barPercentage: 0.6,
+        },
+        {
+          label: 'Testing',
+          data: [0, 0, 0, 1, 1, 1, 0, 0, 0],
+          backgroundColor: '#6A0DAD',
+          borderRadius: 6,
+          barPercentage: 0.6,
+        },
+        {
+          label: 'Launch',
+          data: [0, 0, 0, 0, 0, 1, 1, 1, 1],
+          backgroundColor: '#FFD662',
+          borderRadius: 6,
+          barPercentage: 0.6,
+        }
+      ]
+    };
+
     const roadmapChart = new Chart(ctx, {
       type: 'bar',
-      data: {
-        labels: ['Q2 2025', 'Q3 2025', 'Q4 2025', 'Q1 2026'],
-        datasets: [{
-          label: 'Release Milestones',
-          data: [1, 2, 3, 4],
-          backgroundColor: [
-            '#4caf50',
-            '#2196f3',
-            '#ff9800',
-            '#9c27b0'
-          ],
-          borderRadius: 10,
-          barPercentage: 0.5
-        }]
-      },
+      data: roadmapData,
       options: {
+        indexAxis: 'y',
         responsive: true,
         maintainAspectRatio: false,
-        plugins: {
-          tooltip: {
-            callbacks: {
-              label: function(context) {
-                const labels = [
-                  'MVP Web App Launch',
-                  'Mobile App (v1.0) + Voice Cloning',
-                  'v1.5 Assistive AI Release',
-                  'v2.0 Enterprise & Global Launch'
-                ];
-                return labels[context.dataIndex];
-              }
-            }
+        scales: {
+          x: {
+            stacked: true,
+            grid: { display: false },
+            ticks: { stepSize: 1, color: '#6A0DAD' },
+            beginAtZero: true,
+            max: 1,
           },
-          legend: {
-            display: false
-          },
-          title: {
-            display: true,
-            text: 'Feature Roadmap (2025–2026)',
-            font: {
-              size: 18
-            }
+          y: {
+            stacked: true,
+            ticks: { color: '#6A0DAD', font: { weight: 'bold' } }
           }
         },
-        scales: {
-          y: {
-            display: false
+        plugins: {
+          legend: {
+            labels: { color: '#2E2E2E', font: { weight: '600', size: 14 } },
+            position: 'bottom',
+          },
+          tooltip: {
+            enabled: true,
+            backgroundColor: '#6A0DAD',
+            titleColor: '#FFD662',
+            bodyColor: '#FFFFFF',
+            cornerRadius: 8,
           }
         }
       }
     });
-
   </script>
+
 </body>
 </html>
