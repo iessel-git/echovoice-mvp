@@ -11,17 +11,17 @@
   <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
   <style>
     /* Fonts and Reset */
-   body {
-  font-family: 'Roboto', sans-serif;
-  margin: 0;
-  background: #f5f5f5; /* changed to light gray */
-  color: #2E2E2E;
-  padding: 20px;
-  min-height: 100vh;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-}
+    body {
+      font-family: 'Roboto', sans-serif;
+      margin: 0;
+      background: #f5f5f5; /* Light gray background */
+      color: #2E2E2E;
+      padding: 20px;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+    }
 
     h1 {
       color: #6A0DAD;
@@ -31,6 +31,7 @@
       text-align: center;
       text-shadow: 1px 1px 3px rgba(106,13,173,0.3);
     }
+
     /* Tab buttons container */
     .tab-buttons {
       display: flex;
@@ -61,6 +62,15 @@
       color: #FFD662;
       font-weight: 700;
       transform: scale(1.1);
+    }
+
+    /* Focus outline for accessibility */
+    .tab-button:focus,
+    .phrase-btn:focus,
+    button.speak-btn:focus,
+    input:focus {
+      outline: 3px solid #6A0DAD;
+      outline-offset: 3px;
     }
 
     /* Content areas */
@@ -176,6 +186,11 @@
         gap: 12px;
       }
     }
+    @media (max-width: 320px) {
+      body {
+        padding: 10px;
+      }
+    }
   </style>
 </head>
 <body>
@@ -253,124 +268,123 @@
       return "😐 Neutral";
     }
 
-    function updateEmotionDisplay(text) {
+    function updateEmotion(text) {
       const emotion = detectEmotion(text);
-      document.getElementById("emotionText").innerText = emotion;
+      document.getElementById('emotionText').textContent = emotion;
+    }
+
+    function createPhraseButtons() {
+      const container = document.getElementById('phraseButtons');
+      phrases.forEach(phrase => {
+        const btn = document.createElement('button');
+        btn.textContent = phrase;
+        btn.className = 'phrase-btn';
+        btn.addEventListener('click', () => {
+          speak(phrase);
+          updateEmotion(phrase);
+        });
+        container.appendChild(btn);
+      });
     }
 
     function speakTypedText() {
-      const input = document.getElementById("customText");
+      const input = document.getElementById('customText');
       const text = input.value.trim();
       if (text) {
         speak(text);
-        updateEmotionDisplay(text);
-        input.value = '';
+        updateEmotion(text);
       }
     }
 
-    // Enter key support for input
-    document.getElementById("customText").addEventListener("keydown", function(e) {
-      if (e.key === "Enter") {
+    // Enter key triggers speak
+    document.getElementById('customText').addEventListener('keydown', e => {
+      if (e.key === 'Enter') {
         speakTypedText();
       }
     });
 
-    // Create phrase buttons dynamically
-    const phraseButtonsContainer = document.getElementById("phraseButtons");
-    phrases.forEach(phrase => {
-      const btn = document.createElement("button");
-      btn.className = "phrase-btn";
-      btn.textContent = phrase;
-      btn.onclick = () => {
-        speak(phrase);
-        updateEmotionDisplay(phrase);
-      };
-      phraseButtonsContainer.appendChild(btn);
-    });
+    createPhraseButtons();
 
-    // Product Roadmap Chart.js
-    const ctx = document.getElementById('roadmapChart').getContext('2d');
+    // Roadmap chart setup
+    const roadmapCtx = document.getElementById('roadmapChart').getContext('2d');
+
     const roadmapData = {
-      labels: ['Q1', 'Q2', 'Q3', 'Q4'],
+      labels: ["May", "June", "July", "August", "September", "October"],
       datasets: [
         {
-          label: 'Research & Planning',
-          data: [30, 10, 0, 0],
+          label: 'Q2-Q3 Development Phases',
+          data: [10, 25, 40, 55, 70, 90],
+          fill: false,
+          borderColor: '#6A0DAD',
           backgroundColor: '#6A0DAD',
-          borderRadius: 8,
-          barPercentage: 0.8,
-          categoryPercentage: 0.6,
-        },
-        {
-          label: 'Development',
-          data: [0, 40, 60, 10],
-          backgroundColor: '#17BEBB',
-          borderRadius: 8,
-          barPercentage: 0.8,
-          categoryPercentage: 0.6,
-        },
-        {
-          label: 'Testing & QA',
-          data: [0, 0, 20, 50],
-          backgroundColor: '#FFD662',
-          borderRadius: 8,
-          barPercentage: 0.8,
-          categoryPercentage: 0.6,
-        },
-        {
-          label: 'Launch & Marketing',
-          data: [0, 0, 0, 40],
-          backgroundColor: '#FF6F61',
-          borderRadius: 8,
-          barPercentage: 0.8,
-          categoryPercentage: 0.6,
-        },
+          tension: 0.3,
+          pointRadius: 7,
+          pointHoverRadius: 10,
+          pointBackgroundColor: '#FFD662',
+          borderWidth: 3,
+          showLine: true,
+        }
       ]
     };
 
-    const roadmapChart = new Chart(ctx, {
-      type: 'bar',
+    const roadmapConfig = {
+      type: 'line',
       data: roadmapData,
       options: {
         responsive: true,
         plugins: {
           legend: {
-            position: 'top',
+            display: true,
             labels: {
-              font: { size: 14, weight: '600' }
+              color: '#6A0DAD',
+              font: {
+                size: 16,
+                weight: '700',
+              }
             }
           },
           tooltip: {
             enabled: true,
-            callbacks: {
-              label: ctx => ctx.dataset.label + ': ' + ctx.parsed.y + '% complete'
-            }
+            backgroundColor: '#6A0DAD',
+            titleFont: { weight: 'bold' },
+            bodyFont: { size: 14 }
           }
         },
         scales: {
           x: {
-            stacked: true,
-            grid: { display: false },
-            ticks: { font: { size: 14, weight: '600' }, color: '#6A0DAD' }
+            ticks: {
+              color: '#6A0DAD',
+              font: {
+                size: 14,
+                weight: '600'
+              }
+            },
+            grid: {
+              display: false
+            }
           },
           y: {
-            stacked: true,
             min: 0,
             max: 100,
             ticks: {
+              color: '#6A0DAD',
+              font: {
+                size: 14,
+                weight: '600'
+              },
               stepSize: 20,
-              font: { size: 13 },
-              color: '#555'
+              callback: value => value + '%'
             },
             grid: {
-              color: '#ddd',
               borderDash: [5, 5],
+              color: '#D8D8D8'
             }
           }
         }
       }
-    });
-  </script>
+    };
 
+    const roadmapChart = new Chart(roadmapCtx, roadmapConfig);
+  </script>
 </body>
 </html>
