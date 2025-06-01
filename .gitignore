@@ -1,0 +1,10 @@
+# Dependency directories
+node_modules/
+dist/
+
+# Mac/IDE
+.DS_Store
+*.log
+
+# Environment files
+.env
