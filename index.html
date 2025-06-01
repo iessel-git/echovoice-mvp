@@ -134,6 +134,16 @@
       transform: scale(1.05);
     }
 
+    /* Emotion display style */
+    #emotionDisplay {
+      margin-top: 15px;
+      font-size: 1.15rem;
+      color: #6A0DAD;
+      font-weight: 600;
+      text-align: center;
+      user-select: none;
+    }
+
     /* Roadmap Chart styles */
     .chart-container {
       background: #ffffff;
@@ -177,6 +187,9 @@
     <div class="input-group">
       <input type="text" id="customText" placeholder="Type and press Enter or click Speak" />
       <button class="speak-btn" onclick="speakTypedText()">🔊 Speak</button>
+    </div>
+    <div id="emotionDisplay">
+      Emotion: <span id="emotionText">None</span>
     </div>
   </div>
 
@@ -225,65 +238,88 @@
       synth.speak(utterance);
     }
 
+    function detectEmotion(text) {
+      const lowerText = text.toLowerCase();
+      if (lowerText.includes("happy") || lowerText.includes("thank")) return "😊 Happy";
+      if (lowerText.includes("sad") || lowerText.includes("not feeling well")) return "😢 Sad";
+      if (lowerText.includes("wait") || lowerText.includes("hold on")) return "⏳ Waiting";
+      if (lowerText.includes("yes")) return "👍 Agree";
+      if (lowerText.includes("no")) return "👎 Disagree";
+      return "😐 Neutral";
+    }
+
+    function updateEmotionDisplay(text) {
+      const emotion = detectEmotion(text);
+      document.getElementById("emotionText").innerText = emotion;
+    }
+
     function speakTypedText() {
       const input = document.getElementById("customText");
       const text = input.value.trim();
       if (text) {
         speak(text);
+        updateEmotionDisplay(text);
         input.value = '';
       }
     }
 
-    // Load quick phrase buttons
-    const buttonContainer = document.getElementById("phraseButtons");
-    phrases.forEach((phrase) => {
-      const btn = document.createElement("button");
-      btn.innerText = phrase;
-      btn.className = "phrase-btn";
-      btn.onclick = () => speak(phrase);
-      buttonContainer.appendChild(btn);
-    });
-
-    document.getElementById("customText").addEventListener("keypress", function(e) {
+    // Enter key support for input
+    document.getElementById("customText").addEventListener("keydown", function(e) {
       if (e.key === "Enter") {
         speakTypedText();
       }
     });
 
-    // Chart.js Roadmap
-    const ctx = document.getElementById('roadmapChart').getContext('2d');
+    // Create phrase buttons dynamically
+    const phraseButtonsContainer = document.getElementById("phraseButtons");
+    phrases.forEach(phrase => {
+      const btn = document.createElement("button");
+      btn.className = "phrase-btn";
+      btn.textContent = phrase;
+      btn.onclick = () => {
+        speak(phrase);
+        updateEmotionDisplay(phrase);
+      };
+      phraseButtonsContainer.appendChild(btn);
+    });
 
+    // Product Roadmap Chart.js
+    const ctx = document.getElementById('roadmapChart').getContext('2d');
     const roadmapData = {
-      labels: ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September'],
+      labels: ['Q1', 'Q2', 'Q3', 'Q4'],
       datasets: [
         {
-          label: 'Design',
-          data: [1, 1, 0, 0, 0, 0, 0, 0, 0],
-          backgroundColor: '#FF6F61',
-          borderRadius: 6,
-          barPercentage: 0.6,
+          label: 'Research & Planning',
+          data: [30, 10, 0, 0],
+          backgroundColor: '#6A0DAD',
+          borderRadius: 8,
+          barPercentage: 0.8,
+          categoryPercentage: 0.6,
         },
         {
           label: 'Development',
-          data: [0, 1, 1, 1, 1, 0, 0, 0, 0],
+          data: [0, 40, 60, 10],
           backgroundColor: '#17BEBB',
-          borderRadius: 6,
-          barPercentage: 0.6,
+          borderRadius: 8,
+          barPercentage: 0.8,
+          categoryPercentage: 0.6,
         },
         {
-          label: 'Testing',
-          data: [0, 0, 0, 1, 1, 1, 0, 0, 0],
-          backgroundColor: '#6A0DAD',
-          borderRadius: 6,
-          barPercentage: 0.6,
-        },
-        {
-          label: 'Launch',
-          data: [0, 0, 0, 0, 0, 1, 1, 1, 1],
+          label: 'Testing & QA',
+          data: [0, 0, 20, 50],
           backgroundColor: '#FFD662',
-          borderRadius: 6,
-          barPercentage: 0.6,
-        }
+          borderRadius: 8,
+          barPercentage: 0.8,
+          categoryPercentage: 0.6,
+        },
+        {
+          label: 'Launch & Marketing',
+          data: [0, 0, 0, 40],
+          backgroundColor: '#FF6F61',
+          borderRadius: 8,
+          barPercentage: 0.8,
+          categoryPercentage: 0.6,
+        },
       ]
     };
 
@@ -291,33 +327,40 @@
       type: 'bar',
       data: roadmapData,
       options: {
-        indexAxis: 'y',
         responsive: true,
-        maintainAspectRatio: false,
+        plugins: {
+          legend: {
+            position: 'top',
+            labels: {
+              font: { size: 14, weight: '600' }
+            }
+          },
+          tooltip: {
+            enabled: true,
+            callbacks: {
+              label: ctx => ctx.dataset.label + ': ' + ctx.parsed.y + '% complete'
+            }
+          }
+        },
         scales: {
           x: {
             stacked: true,
             grid: { display: false },
-            ticks: { stepSize: 1, color: '#6A0DAD' },
-            beginAtZero: true,
-            max: 1,
+            ticks: { font: { size: 14, weight: '600' }, color: '#6A0DAD' }
           },
           y: {
             stacked: true,
-            ticks: { color: '#6A0DAD', font: { weight: 'bold' } }
-          }
-        },
-        plugins: {
-          legend: {
-            labels: { color: '#2E2E2E', font: { weight: '600', size: 14 } },
-            position: 'bottom',
-          },
-          tooltip: {
-            enabled: true,
-            backgroundColor: '#6A0DAD',
-            titleColor: '#FFD662',
-            bodyColor: '#FFFFFF',
-            cornerRadius: 8,
+            min: 0,
+            max: 100,
+            ticks: {
+              stepSize: 20,
+              font: { size: 13 },
+              color: '#555'
+            },
+            grid: {
+              color: '#ddd',
+              borderDash: [5, 5],
+            }
           }
         }
       }
