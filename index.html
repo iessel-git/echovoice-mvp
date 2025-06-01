@@ -8,13 +8,12 @@
   <!-- Import Roboto font from Google Fonts -->
   <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;600;700&display=swap" rel="stylesheet" />
 
-  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
   <style>
     /* Fonts and Reset */
     body {
       font-family: 'Roboto', sans-serif;
       margin: 0;
-      background: #f5f5f5; /* Light gray background */
+      background: #f5f5f5;
       color: #2E2E2E;
       padding: 20px;
       min-height: 100vh;
@@ -76,7 +75,7 @@
     /* Content areas */
     .tab-content {
       display: none;
-      max-width: 820px;
+      max-width: 900px;
       width: 100%;
       background: white;
       border-radius: 20px;
@@ -159,24 +158,69 @@
       user-select: none;
     }
 
-    /* Roadmap Chart styles */
-    .chart-container {
-      background: #ffffff;
-      border-radius: 20px;
-      padding: 20px;
-      box-shadow: 0 10px 28px rgba(106,13,173,0.12);
+    /* Roadmap Block Timeline styles */
+    .roadmap-timeline {
+      display: flex;
+      justify-content: space-between;
+      flex-wrap: nowrap;
+      gap: 20px;
+      overflow-x: auto;
+      padding-bottom: 10px;
+      scroll-behavior: smooth;
     }
-    canvas {
-      width: 100% !important;
-      height: auto !important;
-      border-radius: 20px;
+    .milestone {
+      flex: 0 0 140px;
+      background: #6A0DAD;
+      color: #FFD662;
+      border-radius: 16px;
+      padding: 20px 16px;
+      box-shadow: 0 6px 18px rgba(106,13,173,0.25);
+      text-align: center;
+      font-weight: 600;
+      font-size: 1rem;
+      user-select: none;
+      transition: background 0.3s;
+      cursor: default;
+    }
+    .milestone:hover {
+      background: #7e2fcf;
+      box-shadow: 0 10px 25px rgba(126,47,207,0.5);
+    }
+    .milestone .month {
+      font-size: 1.3rem;
+      font-weight: 700;
+      margin-bottom: 8px;
+      text-shadow: 0 1px 2px rgba(0,0,0,0.15);
+    }
+    .milestone .desc {
+      font-size: 0.9rem;
+      line-height: 1.2;
+    }
+    /* Scrollbar styles for roadmap timeline */
+    .roadmap-timeline::-webkit-scrollbar {
+      height: 8px;
+    }
+    .roadmap-timeline::-webkit-scrollbar-track {
+      background: #f0f0f0;
+      border-radius: 8px;
+    }
+    .roadmap-timeline::-webkit-scrollbar-thumb {
+      background: #6A0DAD;
+      border-radius: 8px;
     }
 
     /* Responsive */
-    @media (max-width: 480px) {
-      .tab-button {
-        padding: 10px 18px;
-        font-size: 1rem;
+    @media (max-width: 600px) {
+      .roadmap-timeline {
+        gap: 12px;
+      }
+      .milestone {
+        flex: 0 0 120px;
+        padding: 16px 12px;
+        font-size: 0.9rem;
+      }
+      .milestone .month {
+        font-size: 1.1rem;
       }
       input {
         width: 100%;
@@ -184,11 +228,6 @@
       .input-group {
         flex-direction: column;
         gap: 12px;
-      }
-    }
-    @media (max-width: 320px) {
-      body {
-        padding: 10px;
       }
     }
   </style>
@@ -215,57 +254,85 @@
 
   <div id="roadmap" class="tab-content">
     <h2 style="text-align:center; color:#6A0DAD; margin-bottom: 25px;">Product Roadmap Timeline</h2>
-    <div class="chart-container">
-      <canvas id="roadmapChart"></canvas>
+    <div class="roadmap-timeline" aria-label="Product Roadmap Timeline">
+      <div class="milestone" tabindex="0">
+        <div class="month">May</div>
+        <div class="desc">Research & Planning</div>
+      </div>
+      <div class="milestone" tabindex="0">
+        <div class="month">June</div>
+        <div class="desc">Design & Prototyping</div>
+      </div>
+      <div class="milestone" tabindex="0">
+        <div class="month">July</div>
+        <div class="desc">Development Phase 1</div>
+      </div>
+      <div class="milestone" tabindex="0">
+        <div class="month">August</div>
+        <div class="desc">Development Phase 2</div>
+      </div>
+      <div class="milestone" tabindex="0">
+        <div class="month">September</div>
+        <div class="desc">Testing & QA</div>
+      </div>
+      <div class="milestone" tabindex="0">
+        <div class="month">October</div>
+        <div class="desc">Launch & Feedback</div>
+      </div>
     </div>
   </div>
 
   <script>
     // Tab switching logic
-    const tabs = document.querySelectorAll('.tab-button');
-    const contents = document.querySelectorAll('.tab-content');
+    const tabButtons = document.querySelectorAll('.tab-button');
+    const tabContents = document.querySelectorAll('.tab-content');
 
-    tabs.forEach(tab => {
-      tab.addEventListener('click', () => {
-        tabs.forEach(btn => btn.classList.remove('active'));
-        tab.classList.add('active');
+    tabButtons.forEach(button => {
+      button.addEventListener('click', () => {
+        const target = button.getAttribute('data-tab');
 
-        contents.forEach(content => {
-          content.id === tab.dataset.tab ? content.classList.add('active') : content.classList.remove('active');
+        tabButtons.forEach(btn => btn.classList.remove('active'));
+        button.classList.add('active');
+
+        tabContents.forEach(tc => {
+          tc.classList.toggle('active', tc.id === target);
         });
       });
     });
 
-    // Voice Assistant code
+    // --- Voice Assistant Logic ---
+
+    // Example phrases
     const phrases = [
-      "Hello",
-      "I'm not feeling well today.",
-      "Please wait a moment.",
-      "Thank you!",
-      "Yes",
-      "No"
+      "Hello, how can I assist you?",
+      "I'm here to help!",
+      "Let's get started.",
+      "Have a great day!",
+      "What would you like to know?",
+      "Voice activated and ready.",
+      "Say something, I'm listening."
     ];
 
-    const synth = window.speechSynthesis;
-
-    function speak(text) {
-      const utterance = new SpeechSynthesisUtterance(text);
-      utterance.rate = 1;
-      utterance.pitch = 1;
-      const voices = synth.getVoices();
-      // Try to pick a male voice, fallback to default
-      utterance.voice = voices.find(v => v.name.toLowerCase().includes('male')) || voices[0];
-      synth.speak(utterance);
+    // Simple Emotion Detection (mock)
+    function detectEmotion(text) {
+      const lower = text.toLowerCase();
+      if (/(happy|great|good|awesome|fantastic|love)/.test(lower)) return "Happy 😊";
+      if (/(sad|bad|upset|angry|mad|hate)/.test(lower)) return "Sad 😢";
+      if (/(help|assist|support)/.test(lower)) return "Helpful 🤝";
+      if (/(hello|hi|hey)/.test(lower)) return "Friendly 👋";
+      return "Neutral 😐";
     }
 
-    function detectEmotion(text) {
-      const lowerText = text.toLowerCase();
-      if (lowerText.includes("happy") || lowerText.includes("thank")) return "😊 Happy";
-      if (lowerText.includes("sad") || lowerText.includes("not feeling well")) return "😢 Sad";
-      if (lowerText.includes("wait") || lowerText.includes("hold on")) return "⏳ Waiting";
-      if (lowerText.includes("yes")) return "👍 Agree";
-      if (lowerText.includes("no")) return "👎 Disagree";
-      return "😐 Neutral";
+    // Speak function using Web Speech API
+    function speak(text) {
+      if (!('speechSynthesis' in window)) {
+        alert('Sorry, your browser does not support speech synthesis.');
+        return;
+      }
+      const utterance = new SpeechSynthesisUtterance(text);
+      utterance.lang = 'en-US';
+      window.speechSynthesis.cancel(); // Cancel any ongoing speech
+      window.speechSynthesis.speak(utterance);
     }
 
     function updateEmotion(text) {
@@ -279,6 +346,7 @@
         const btn = document.createElement('button');
         btn.textContent = phrase;
         btn.className = 'phrase-btn';
+        btn.setAttribute('aria-label', `Speak phrase: ${phrase}`);
         btn.addEventListener('click', () => {
           speak(phrase);
           updateEmotion(phrase);
@@ -304,87 +372,6 @@
     });
 
     createPhraseButtons();
-
-    // Roadmap chart setup
-    const roadmapCtx = document.getElementById('roadmapChart').getContext('2d');
-
-    const roadmapData = {
-      labels: ["May", "June", "July", "August", "September", "October"],
-      datasets: [
-        {
-          label: 'Q2-Q3 Development Phases',
-          data: [10, 25, 40, 55, 70, 90],
-          fill: false,
-          borderColor: '#6A0DAD',
-          backgroundColor: '#6A0DAD',
-          tension: 0.3,
-          pointRadius: 7,
-          pointHoverRadius: 10,
-          pointBackgroundColor: '#FFD662',
-          borderWidth: 3,
-          showLine: true,
-        }
-      ]
-    };
-
-    const roadmapConfig = {
-      type: 'line',
-      data: roadmapData,
-      options: {
-        responsive: true,
-        plugins: {
-          legend: {
-            display: true,
-            labels: {
-              color: '#6A0DAD',
-              font: {
-                size: 16,
-                weight: '700',
-              }
-            }
-          },
-          tooltip: {
-            enabled: true,
-            backgroundColor: '#6A0DAD',
-            titleFont: { weight: 'bold' },
-            bodyFont: { size: 14 }
-          }
-        },
-        scales: {
-          x: {
-            ticks: {
-              color: '#6A0DAD',
-              font: {
-                size: 14,
-                weight: '600'
-              }
-            },
-            grid: {
-              display: false
-            }
-          },
-          y: {
-            min: 0,
-            max: 100,
-            ticks: {
-              color: '#6A0DAD',
-              font: {
-                size: 14,
-                weight: '600'
-              },
-              stepSize: 20,
-              callback: value => value + '%'
-            },
-            grid: {
-              borderDash: [5, 5],
-              color: '#D8D8D8'
-            }
-          }
-        }
-      }
-    };
-
-    const roadmapChart = new Chart(roadmapCtx, roadmapConfig);
   </script>
 </body>
 </html>
