@@ -1,0 +1,256 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>EchoVoice: Voice Assistant & Roadmap</title>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      margin: 0;
+      background: #f0f8ff;
+      padding: 20px;
+    }
+    h1 {
+      text-align: center;
+      color: #007acc;
+      margin-bottom: 20px;
+      font-size: 1.8rem;
+    }
+    /* Tab buttons container */
+    .tab-buttons {
+      display: flex;
+      justify-content: center;
+      gap: 10px;
+      margin-bottom: 20px;
+      flex-wrap: wrap;
+    }
+    .tab-button {
+      background: #007acc;
+      color: white;
+      border: none;
+      border-radius: 8px;
+      padding: 10px 20px;
+      font-size: 1rem;
+      cursor: pointer;
+      transition: background 0.3s;
+    }
+    .tab-button:hover {
+      background: #005fa3;
+    }
+    .tab-button.active {
+      background: #004080;
+      font-weight: bold;
+    }
+
+    /* Content areas */
+    .tab-content {
+      display: none;
+      max-width: 800px;
+      margin: 0 auto;
+    }
+    .tab-content.active {
+      display: block;
+    }
+
+    /* Voice Assistant Styles */
+    .grid {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      justify-content: center;
+      margin-bottom: 20px;
+    }
+    .phrase-btn {
+      padding: 12px 18px;
+      background: #007acc;
+      color: white;
+      border: none;
+      border-radius: 8px;
+      cursor: pointer;
+      font-size: 1rem;
+    }
+    .phrase-btn:hover {
+      background: #005fa3;
+    }
+    .input-group {
+      display: flex;
+      justify-content: center;
+      gap: 10px;
+      flex-wrap: wrap;
+    }
+    input {
+      padding: 12px;
+      font-size: 1rem;
+      width: 80%;
+      max-width: 300px;
+      border: 1px solid #ccc;
+      border-radius: 6px;
+    }
+    button.speak-btn {
+      padding: 12px;
+      background: green;
+      color: white;
+      font-size: 1rem;
+      border: none;
+      border-radius: 6px;
+    }
+
+    /* Roadmap Chart styles */
+    .chart-container {
+      background: #fff;
+      border-radius: 10px;
+      padding: 10px;
+    }
+    canvas {
+      width: 100% !important;
+      height: auto !important;
+    }
+  </style>
+</head>
+<body>
+
+  <h1>🗣️ EchoVoice</h1>
+
+  <div class="tab-buttons">
+    <button class="tab-button active" data-tab="assistant">Voice Assistant</button>
+    <button class="tab-button" data-tab="roadmap">Product Roadmap</button>
+  </div>
+
+  <div id="assistant" class="tab-content active">
+    <div class="grid" id="phraseButtons"></div>
+    <div class="input-group">
+      <input type="text" id="customText" placeholder="Type and press Enter or click Speak" />
+      <button class="speak-btn" onclick="speakTypedText()">🔊 Speak</button>
+    </div>
+  </div>
+
+  <div id="roadmap" class="tab-content">
+    <h2 style="text-align:center; color:#007acc;">Product Roadmap Timeline</h2>
+    <div class="chart-container">
+      <canvas id="roadmapChart"></canvas>
+    </div>
+  </div>
+
+  <script>
+    // Tab switching logic
+    const tabs = document.querySelectorAll('.tab-button');
+    const contents = document.querySelectorAll('.tab-content');
+
+    tabs.forEach(tab => {
+      tab.addEventListener('click', () => {
+        tabs.forEach(btn => btn.classList.remove('active'));
+        tab.classList.add('active');
+
+        contents.forEach(content => {
+          content.id === tab.dataset.tab ? content.classList.add('active') : content.classList.remove('active');
+        });
+      });
+    });
+
+    // Voice Assistant code
+    const phrases = [
+      "Hello",
+      "I'm not feeling well today.",
+      "Please wait a moment.",
+      "Thank you!",
+      "Yes",
+      "No"
+    ];
+
+    const synth = window.speechSynthesis;
+
+    function speak(text) {
+      const utterance = new SpeechSynthesisUtterance(text);
+      utterance.rate = 1;
+      utterance.pitch = 1;
+      const voices = synth.getVoices();
+      // Try to pick a male voice, fallback to default
+      utterance.voice = voices.find(v => v.name.toLowerCase().includes('male')) || voices[0];
+      synth.speak(utterance);
+    }
+
+    function speakTypedText() {
+      const input = document.getElementById("customText");
+      const text = input.value.trim();
+      if (text) {
+        speak(text);
+        input.value = '';
+      }
+    }
+
+    // Load quick phrase buttons
+    const buttonContainer = document.getElementById("phraseButtons");
+    phrases.forEach((phrase) => {
+      const btn = document.createElement("button");
+      btn.innerText = phrase;
+      btn.className = "phrase-btn";
+      btn.onclick = () => speak(phrase);
+      buttonContainer.appendChild(btn);
+    });
+
+    document.getElementById("customText").addEventListener("keypress", function(e) {
+      if (e.key === "Enter") {
+        speakTypedText();
+      }
+    });
+
+    // Chart.js Roadmap
+    const ctx = document.getElementById('roadmapChart').getContext('2d');
+    const roadmapChart = new Chart(ctx, {
+      type: 'bar',
+      data: {
+        labels: ['Q2 2025', 'Q3 2025', 'Q4 2025', 'Q1 2026'],
+        datasets: [{
+          label: 'Release Milestones',
+          data: [1, 2, 3, 4],
+          backgroundColor: [
+            '#4caf50',
+            '#2196f3',
+            '#ff9800',
+            '#9c27b0'
+          ],
+          borderRadius: 10,
+          barPercentage: 0.5
+        }]
+      },
+      options: {
+        responsive: true,
+        maintainAspectRatio: false,
+        plugins: {
+          tooltip: {
+            callbacks: {
+              label: function(context) {
+                const labels = [
+                  'MVP Web App Launch',
+                  'Mobile App (v1.0) + Voice Cloning',
+                  'v1.5 Assistive AI Release',
+                  'v2.0 Enterprise & Global Launch'
+                ];
+                return labels[context.dataIndex];
+              }
+            }
+          },
+          legend: {
+            display: false
+          },
+          title: {
+            display: true,
+            text: 'Feature Roadmap (2025–2026)',
+            font: {
+              size: 18
+            }
+          }
+        },
+        scales: {
+          y: {
+            display: false
+          }
+        }
+      }
+    });
+
+  </script>
+</body>
+</html>
