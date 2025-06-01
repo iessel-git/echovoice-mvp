@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>EchoVoice Product Roadmap</title>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background: #f7f9fc;
+      padding: 20px;
+      margin: 0;
+    }
+    h2 {
+      text-align: center;
+      color: #007acc;
+      font-size: 1.5rem;
+    }
+    .chart-container {
+      width: 100%;
+      max-width: 800px;
+      margin: 0 auto;
+    }
+    canvas {
+      background: #fff;
+      border-radius: 10px;
+      padding: 10px;
+      width: 100% !important;
+      height: auto !important;
+    }
+  </style>
+</head>
+<body>
+  <h2>EchoVoice Product Roadmap Timeline</h2>
+  <div class="chart-container">
+    <canvas id="roadmapChart"></canvas>
+  </div>
+
+  <script>
+    const ctx = document.getElementById('roadmapChart').getContext('2d');
+    const roadmapChart = new Chart(ctx, {
+      type: 'bar',
+      data: {
+        labels: ['Q2 2025', 'Q3 2025', 'Q4 2025', 'Q1 2026'],
+        datasets: [{
+          label: 'Release Milestones',
+          data: [1, 2, 3, 4],
+          backgroundColor: [
+            '#4caf50',
+            '#2196f3',
+            '#ff9800',
+            '#9c27b0'
+          ],
+          borderRadius: 10,
+          barPercentage: 0.5
+        }]
+      },
+      options: {
+        responsive: true,
+        maintainAspectRatio: false,
+        plugins: {
+          tooltip: {
+            callbacks: {
+              label: function(context) {
+                const labels = [
+                  'MVP Web App Launch',
+                  'Mobile App (v1.0) + Voice Cloning',
+                  'v1.5 Assistive AI Release',
+                  'v2.0 Enterprise & Global Launch'
+                ];
+                return labels[context.dataIndex];
+              }
+            }
+          },
+          legend: {
+            display: false
+          },
+          title: {
+            display: true,
+            text: 'Feature Roadmap (2025–2026)',
+            font: {
+              size: 18
+            }
+          }
+        },
+        scales: {
+          y: {
+            display: false
+          }
+        }
+      }
+    });
+  </script>
+</body>
+</html>
