@@ -201,7 +201,252 @@
   }
 }
     
+if (typeof speechSynthesis !== 'undefined') {
+  // Call once in case voices are already available
+  populateVoiceList();
 
+  // Call again when voices become available
+  speechSynthesis.onvoiceschanged = populateVoiceList;
+}
+    function speak(text) {
+      const utterance = new SpeechSynthesisUtterance(text);
+      utterance.rate = 1;
+      utterance.pitch = 1;
+      const selectedIndex = document.getElementById('voiceSelect').value;
+      if (voices[selectedIndex]) {
+        utterance.voice = voices[selectedIndex];
+      }
+      synth.speak(utterance);
+    }
+
+    function handleInput() {
+      const input = document.getElementById("userInput").value;
+      const output = ` "${input}"`;
+      document.getElementById("responseOutput").innerText = output;
+      speak(output);
+    }
+
+    function translateText() {
+      const input = document.getElementById("translateInput").value;
+      const output = `Translation of "${input}"`; // Replace with real translation logic
+      document.getElementById("translationOutput").innerText = output;
+    }
+
+    function createPhraseButtons() {
+      const phrases = ["Hello", "Thank you", "How are you?", "What time is it?","Do you have updates","Goodbye"];
+      const container = document.getElementById("quickPhrases");
+      phrases.forEach(phrase => {
+        const btn = document.createElement("button");
+        btn.inn<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Echovoice Assistant</title>
+  <!-- Roboto Font -->
+  <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap" rel="stylesheet">
+  <style>
+    body {
+      font-family: 'Roboto', sans-serif;
+      background-color: #f4f4f9;
+      margin: 0;
+      padding: 0;
+    }
+    header {
+      background-color: #6A0DAD;
+      color: white;
+      padding: 1rem;
+      text-align: center;
+    }
+    .tabs {
+      display: flex;
+      justify-content: center;
+      background-color: #e0d4f7;
+    }
+    .tab-button {
+      flex: 1;
+      padding: 1rem;
+      border: none;
+      background-color: #e0d4f7;
+      cursor: pointer;
+      font-size: 1.2rem;
+      font-weight: 500;
+      color: #333;
+    }
+    .tab-button.active {
+      background-color: #fff;
+      border-bottom: 3px solid #6A0DAD;
+    }
+    .tab-content {
+      display: none;
+      padding: 2rem;
+    }
+    .tab-content.active {
+      display: block;
+    }
+    .input-group {
+      display: flex;
+      max-width: 600px;
+      margin: 1rem auto;
+    }
+    .input-group input {
+      flex: 1;
+      padding: 1rem;
+      font-size: 1rem;
+      border: 2px solid #6A0DAD;
+      border-right: none;
+      border-radius: 25px 0 0 25px;
+      outline: none;
+    }
+    .input-group button {
+      padding: 1rem 2rem;
+      background-color: #6A0DAD;
+      color: white;
+      font-weight: 500;
+      font-size: 1rem;
+      border: none;
+      border-radius: 0 25px 25px 0;
+      cursor: pointer;
+    }
+    .output {
+      max-width: 600px;
+      margin: 1rem auto;
+      background: #fff;
+      padding: 1.5rem;
+      border-radius: 10px;
+      box-shadow: 0 4px 8px rgba(0,0,0,0.05);
+    }
+    .buttons {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: center;
+      gap: 10px;
+      margin-top: 20px;
+    }
+    .buttons button {
+      padding: 10px 16px;
+      border: none;
+      background-color: #6A0DAD;
+      color: white;
+      border-radius: 20px;
+      font-weight: 500;
+      cursor: pointer;
+    }
+    #voiceSelect {
+      padding: 10px 18px;
+      border-radius: 25px;
+      border: 2px solid #6A0DAD;
+      font-size: 1rem;
+      font-family: 'Roboto', sans-serif;
+    }
+    footer {
+      text-align: center;
+      margin-top: 3rem;
+      font-size: 0.9rem;
+      color: #888;
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <h1>Echovoice Assistant</h1>
+  </header>
+
+  <div class="tabs">
+    <button class="tab-button active" onclick="showTab('assistant')">Assistant</button>
+    <button class="tab-button" onclick="showTab('translator')">Translator</button>
+  </div>
+
+  <div id="assistant" class="tab-content active">
+    <div style="margin: 20px 0; text-align: center;">
+      <label for="voiceSelect" style="font-weight:500; color:#6A0DAD; margin-right:10px;">Select Voice:</label>
+      <select id="voiceSelect">
+        <option>Loading voices...</option>
+      </select>
+    </div>
+
+    <div class="input-group">
+      <input type="text" id="userInput" placeholder="Type your message..." />
+      <button onclick="handleInput()">Send</button>
+    </div>
+    <div class="output" id="responseOutput">Your response will appear here...</div>
+    <div class="buttons" id="quickPhrases"></div>
+  </div>
+
+  <div id="translator" class="tab-content">
+    <div class="input-group">
+      <input type="text" id="translateInput" placeholder="Type text to translate..." />
+      <button onclick="translateText()">Translate</button>
+    </div>
+    <div class="output" id="translationOutput">Translation will appear here...</div>
+  </div>
+
+  <footer>
+    © 2025 Echovoice AI. All rights reserved.
+  </footer>
+
+  <script>
+    const synth = window.speechSynthesis;
+    let voices = [];
+
+    function showTab(tabId) {
+      document.querySelectorAll('.tab-content').forEach(tab => {
+        tab.classList.remove('active');
+      });
+      document.getElementById(tabId).classList.add('active');
+
+      document.querySelectorAll('.tab-button').forEach(button => {
+        button.classList.remove('active');
+      });
+      event.target.classList.add('active');
+    }
+
+    function populateVoiceList() {
+  voices = synth.getVoices();
+  const voiceSelect = document.getElementById('voiceSelect');
+  voiceSelect.innerHTML = '';
+
+  const userLang = navigator.language || 'en-US';
+  let bestMatchIndex = -1;
+  let enUSIndex = -1;
+
+  voices.forEach((voice, index) => {
+    const option = document.createElement('option');
+    option.textContent = `${voice.name} (${voice.lang})`;
+    option.value = index;
+
+    if (voice.lang === userLang) {
+      bestMatchIndex = index;
+    }
+
+    if (voice.lang === 'en-US' && enUSIndex === -1) {
+      enUSIndex = index;
+    }
+
+    if (voice.default) {
+      option.textContent += ' — DEFAULT';
+    }
+
+    voiceSelect.appendChild(option);
+  });
+
+  // Set best match or fallback
+  if (bestMatchIndex !== -1) {
+    voiceSelect.selectedIndex = bestMatchIndex;
+  } else if (enUSIndex !== -1) {
+    voiceSelect.selectedIndex = enUSIndex;
+  } else {
+    voiceSelect.selectedIndex = 0; // fallback to first voice
+  }
+}
+    
+if (typeof speechSynthesis !== 'undefined') {
+  // Call once in case voices are already available
+  populateVoiceList();
+
+  // Call again when voices become available
+  speechSynthesis.onvoiceschanged = populateVoiceList;
+}
     function speak(text) {
       const utterance = new SpeechSynthesisUtterance(text);
       utterance.rate = 1;
@@ -232,6 +477,523 @@
       phrases.forEach(phrase => {
         const btn = document.createElement("button");
         btn.innerText = phrase;
+        btn.onclick = () => {
+          document.getElementById("userInput").value = phrase;
+          handleInput();
+        };
+        container.appendChild(btn);
+      });
+    }
+
+    createPhraseButtons();<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Echovoice Assistant</title>
+  <!-- Roboto Font -->
+  <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap" rel="stylesheet">
+  <style>
+    body {
+      font-family: 'Roboto', sans-serif;
+      background-color: #f4f4f9;
+      margin: 0;
+      padding: 0;
+    }
+    header {
+      background-color: #6A0DAD;
+      color: white;
+      padding: 1rem;
+      text-align: center;
+    }
+    .tabs {
+      display: flex;
+      justify-content: center;
+      background-color: #e0d4f7;
+    }
+    .tab-button {
+      flex: 1;
+      padding: 1rem;
+      border: none;
+      background-color: #e0d4f7;
+      cursor: pointer;
+      font-size: 1.2rem;
+      font-weight: 500;
+      color: #333;
+    }
+    .tab-button.active {
+      background-color: #fff;
+      border-bottom: 3px solid #6A0DAD;
+    }
+    .tab-content {
+      display: none;
+      padding: 2rem;
+    }
+    .tab-content.active {
+      display: block;
+    }
+    .input-group {
+      display: flex;
+      max-width: 600px;
+      margin: 1rem auto;
+    }
+    .input-group input {
+      flex: 1;
+      padding: 1rem;
+      font-size: 1rem;
+      border: 2px solid #6A0DAD;
+      border-right: none;
+      border-radius: 25px 0 0 25px;
+      outline: none;
+    }
+    .input-group button {
+      padding: 1rem 2rem;
+      background-color: #6A0DAD;
+      color: white;
+      font-weight: 500;
+      font-size: 1rem;
+      border: none;
+      border-radius: 0 25px 25px 0;
+      cursor: pointer;
+    }
+    .output {
+      max-width: 600px;
+      margin: 1rem auto;
+      background: #fff;
+      padding: 1.5rem;
+      border-radius: 10px;
+      box-shadow: 0 4px 8px rgba(0,0,0,0.05);
+    }
+    .buttons {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: center;
+      gap: 10px;
+      margin-top: 20px;
+    }
+    .buttons button {
+      padding: 10px 16px;
+      border: none;
+      background-color: #6A0DAD;
+      color: white;
+      border-radius: 20px;
+      font-weight: 500;
+      cursor: pointer;
+    }
+    #voiceSelect {
+      padding: 10px 18px;
+      border-radius: 25px;
+      border: 2px solid #6A0DAD;
+      font-size: 1rem;
+      font-family: 'Roboto', sans-serif;
+    }
+    footer {
+      text-align: center;
+      margin-top: 3rem;
+      font-size: 0.9rem;
+      color: #888;
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <h1>Echovoice Assistant</h1>
+  </header>
+
+  <div class="tabs">
+    <button class="tab-button active" onclick="showTab('assistant')">Assistant</button>
+    <button class="tab-button" onclick="showTab('translator')">Translator</button>
+  </div>
+
+  <div id="assistant" class="tab-content active">
+    <div style="margin: 20px 0; text-align: center;">
+      <label for="voiceSelect" style="font-weight:500; color:#6A0DAD; margin-right:10px;">Select Voice:</label>
+      <select id="voiceSelect">
+        <option>Loading voices...</option>
+      </select>
+    </div>
+
+    <div class="input-group">
+      <input type="text" id="userInput" placeholder="Type your message..." />
+      <button onclick="handleInput()">Send</button>
+    </div>
+    <div class="output" id="responseOutput">Your response will appear here...</div>
+    <div class="buttons" id="quickPhrases"></div>
+  </div>
+
+  <div id="translator" class="tab-content">
+    <div class="input-group">
+      <input type="text" id="translateInput" placeholder="Type text to translate..." />
+      <button onclick="translateText()">Translate</button>
+    </div>
+    <div class="output" id="translationOutput">Translation will appear here...</div>
+  </div>
+
+  <footer>
+    © 2025 Echovoice AI. All rights reserved.
+  </footer>
+
+  <script>
+    const synth = window.speechSynthesis;
+    let voices = [];
+
+    function showTab(tabId) {
+      document.querySelectorAll('.tab-content').forEach(tab => {
+        tab.classList.remove('active');
+      });
+      document.getElementById(tabId).classList.add('active');
+
+      document.querySelectorAll('.tab-button').forEach(button => {
+        button.classList.remove('active');
+      });
+      event.target.classList.add('active');
+    }
+
+    function populateVoiceList() {
+  voices = synth.getVoices();
+  const voiceSelect = document.getElementById('voiceSelect');
+  voiceSelect.innerHTML = '';
+
+  const userLang = navigator.language || 'en-US';
+  let bestMatchIndex = -1;
+  let enUSIndex = -1;
+
+  voices.forEach((voice, index) => {
+    const option = document.createElement('option');
+    option.textContent = `${voice.name} (${voice.lang})`;
+    option.value = index;
+
+    if (voice.lang === userLang) {
+      bestMatchIndex = index;
+    }
+
+    if (voice.lang === 'en-US' && enUSIndex === -1) {
+      enUSIndex = index;
+    }
+
+    if (voice.default) {
+      option.textContent += ' — DEFAULT';
+    }
+
+    voiceSelect.appendChild(option);
+  });
+
+  // Set best match or fallback
+  if (bestMatchIndex !== -1) {
+    voiceSelect.selectedIndex = bestMatchIndex;
+  } else if (enUSIndex !== -1) {
+    voiceSelect.selectedIndex = enUSIndex;
+  } else {
+    voiceSelect.selectedIndex = 0; // fallback to first voice
+  }
+}
+    
+if (typeof speechSynthesis !== 'undefined') {
+  // Call once in case voices are already available
+  populateVoiceList();
+
+  // Call again when voices become available
+  speechSynthesis.onvoiceschanged = populateVoiceList;
+}
+    function speak(text) {
+      const utterance = new SpeechSynthesisUtterance(text);
+      utterance.rate = 1;
+      utterance.pitch = 1;
+      const selectedIndex = document.getElementById('voiceSelect').value;
+      if (voices[selectedIndex]) {
+        utterance.voice = voices[selectedIndex];
+      }
+      synth.speak(utterance);
+    }
+
+    function handleInput() {
+      const input = document.getElementById("userInput").value;
+      const output = ` "${input}"`;
+      document.getElementById("responseOutput").innerText = output;
+      speak(output);
+    }
+
+    function translateText() {
+      const input = document.getElementById("translateInput").value;
+      const output = `Translation of "${input}"`; // Replace with real translation logic
+      document.getElementById("translationOutput").innerText = output;
+    }
+
+    function createPhraseButtons() {
+      const phrases = ["Hello", "Thank you", "How are you?", "What time is it?","Do you have updates","Goodbye"];
+      const container = document.getElementById("quickPhrases");
+      phrases.forEach(phrase => {
+        const btn = document.createElement("button");
+        btn.inn<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Echovoice Assistant</title>
+  <!-- Roboto Font -->
+  <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap" rel="stylesheet">
+  <style>
+    body {
+      font-family: 'Roboto', sans-serif;
+      background-color: #f4f4f9;
+      margin: 0;
+      padding: 0;
+    }
+    header {
+      background-color: #6A0DAD;
+      color: white;
+      padding: 1rem;
+      text-align: center;
+    }
+    .tabs {
+      display: flex;
+      justify-content: center;
+      background-color: #e0d4f7;
+    }
+    .tab-button {
+      flex: 1;
+      padding: 1rem;
+      border: none;
+      background-color: #e0d4f7;
+      cursor: pointer;
+      font-size: 1.2rem;
+      font-weight: 500;
+      color: #333;
+    }
+    .tab-button.active {
+      background-color: #fff;
+      border-bottom: 3px solid #6A0DAD;
+    }
+    .tab-content {
+      display: none;
+      padding: 2rem;
+    }
+    .tab-content.active {
+      display: block;
+    }
+    .input-group {
+      display: flex;
+      max-width: 600px;
+      margin: 1rem auto;
+    }
+    .input-group input {
+      flex: 1;
+      padding: 1rem;
+      font-size: 1rem;
+      border: 2px solid #6A0DAD;
+      border-right: none;
+      border-radius: 25px 0 0 25px;
+      outline: none;
+    }
+    .input-group button {
+      padding: 1rem 2rem;
+      background-color: #6A0DAD;
+      color: white;
+      font-weight: 500;
+      font-size: 1rem;
+      border: none;
+      border-radius: 0 25px 25px 0;
+      cursor: pointer;
+    }
+    .output {
+      max-width: 600px;
+      margin: 1rem auto;
+      background: #fff;
+      padding: 1.5rem;
+      border-radius: 10px;
+      box-shadow: 0 4px 8px rgba(0,0,0,0.05);
+    }
+    .buttons {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: center;
+      gap: 10px;
+      margin-top: 20px;
+    }
+    .buttons button {
+      padding: 10px 16px;
+      border: none;
+      background-color: #6A0DAD;
+      color: white;
+      border-radius: 20px;
+      font-weight: 500;
+      cursor: pointer;
+    }
+    #voiceSelect {
+      padding: 10px 18px;
+      border-radius: 25px;
+      border: 2px solid #6A0DAD;
+      font-size: 1rem;
+      font-family: 'Roboto', sans-serif;
+    }
+    footer {
+      text-align: center;
+      margin-top: 3rem;
+      font-size: 0.9rem;
+      color: #888;
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <h1>Echovoice Assistant</h1>
+  </header>
+
+  <div class="tabs">
+    <button class="tab-button active" onclick="showTab('assistant')">Assistant</button>
+    <button class="tab-button" onclick="showTab('translator')">Translator</button>
+  </div>
+
+  <div id="assistant" class="tab-content active">
+    <div style="margin: 20px 0; text-align: center;">
+      <label for="voiceSelect" style="font-weight:500; color:#6A0DAD; margin-right:10px;">Select Voice:</label>
+      <select id="voiceSelect">
+        <option>Loading voices...</option>
+      </select>
+    </div>
+
+    <div class="input-group">
+      <input type="text" id="userInput" placeholder="Type your message..." />
+      <button onclick="handleInput()">Send</button>
+    </div>
+    <div class="output" id="responseOutput">Your response will appear here...</div>
+    <div class="buttons" id="quickPhrases"></div>
+  </div>
+
+  <div id="translator" class="tab-content">
+    <div class="input-group">
+      <input type="text" id="translateInput" placeholder="Type text to translate..." />
+      <button onclick="translateText()">Translate</button>
+    </div>
+    <div class="output" id="translationOutput">Translation will appear here...</div>
+  </div>
+
+  <footer>
+    © 2025 Echovoice AI. All rights reserved.
+  </footer>
+
+  <script>
+    const synth = window.speechSynthesis;
+    let voices = [];
+
+    function showTab(tabId) {
+      document.querySelectorAll('.tab-content').forEach(tab => {
+        tab.classList.remove('active');
+      });
+      document.getElementById(tabId).classList.add('active');
+
+      document.querySelectorAll('.tab-button').forEach(button => {
+        button.classList.remove('active');
+      });
+      event.target.classList.add('active');
+    }
+
+    function populateVoiceList() {
+  voices = synth.getVoices();
+  const voiceSelect = document.getElementById('voiceSelect');
+  voiceSelect.innerHTML = '';
+
+  const userLang = navigator.language || 'en-US';
+  let bestMatchIndex = -1;
+  let enUSIndex = -1;
+
+  voices.forEach((voice, index) => {
+    const option = document.createElement('option');
+    option.textContent = `${voice.name} (${voice.lang})`;
+    option.value = index;
+
+    if (voice.lang === userLang) {
+      bestMatchIndex = index;
+    }
+
+    if (voice.lang === 'en-US' && enUSIndex === -1) {
+      enUSIndex = index;
+    }
+
+    if (voice.default) {
+      option.textContent += ' — DEFAULT';
+    }
+
+    voiceSelect.appendChild(option);
+  });
+
+  // Set best match or fallback
+  if (bestMatchIndex !== -1) {
+    voiceSelect.selectedIndex = bestMatchIndex;
+  } else if (enUSIndex !== -1) {
+    voiceSelect.selectedIndex = enUSIndex;
+  } else {
+    voiceSelect.selectedIndex = 0; // fallback to first voice
+  }
+}
+    
+if (typeof speechSynthesis !== 'undefined') {
+  // Call once in case voices are already available
+  populateVoiceList();
+
+  // Call again when voices become available
+  speechSynthesis.onvoiceschanged = populateVoiceList;
+}
+    function speak(text) {
+      const utterance = new SpeechSynthesisUtterance(text);
+      utterance.rate = 1;
+      utterance.pitch = 1;
+      const selectedIndex = document.getElementById('voiceSelect').value;
+      if (voices[selectedIndex]) {
+        utterance.voice = voices[selectedIndex];
+      }
+      synth.speak(utterance);
+    }
+
+    function handleInput() {
+      const input = document.getElementById("userInput").value;
+      const output = ` "${input}"`;
+      document.getElementById("responseOutput").innerText = output;
+      speak(output);
+    }
+
+    function translateText() {
+      const input = document.getElementById("translateInput").value;
+      const output = `Translation of "${input}"`; // Replace with real translation logic
+      document.getElementById("translationOutput").innerText = output;
+    }
+
+    function createPhraseButtons() {
+      const phrases = ["Hello", "Thank you", "How are you?", "What time is it?","Do you have updates","Goodbye"];
+      const container = document.getElementById("quickPhrases");
+      phrases.forEach(phrase => {
+        const btn = document.createElement("button");
+        btn.innerText = phrase;
+        btn.onclick = () => {
+          document.getElementById("userInput").value = phrase;
+          handleInput();
+        };
+        container.appendChild(btn);
+      });
+    }
+
+    createPhraseButtons();
+  </script>
+</body>
+</html>
+erText = phrase;
+        btn.onclick = () => {
+          document.getElementById("userInput").value = phrase;
+          handleInput();
+        };
+        container.appendChild(btn);
+      });
+    }
+
+    createPhraseButtons();
+  </script>
+</body>
+</html>
+
+  </script>
+</body>
+</html>
+erText = phrase;
         btn.onclick = () => {
           document.getElementById("userInput").value = phrase;
           handleInput();
