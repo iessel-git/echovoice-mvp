@@ -162,28 +162,33 @@
       event.target.classList.add('active');
     }
 
+    
     function populateVoiceList() {
-      voices = synth.getVoices();
-      const voiceSelect = document.getElementById('voiceSelect');
-      voiceSelect.innerHTML = '';
+  voices = synth.getVoices();
+  const voiceSelect = document.getElementById('voiceSelect');
+  voiceSelect.innerHTML = '';
 
-      voices.forEach((voice, index) => {
-        const option = document.createElement('option');
-        option.textContent = `${voice.name} (${voice.lang})`;
-        option.value = index;
-        if (voice.default) {
-          option.textContent += ' — DEFAULT';
-          option.selected = true;
-        }
-        voiceSelect.appendChild(option);
-      });
+  const userLang = navigator.language || 'en-US';
+  let bestMatchIndex = 0;
+
+  voices.forEach((voice, index) => {
+    const option = document.createElement('option');
+    option.textContent = `${voice.name} (${voice.lang})`;
+    option.value = index;
+
+    if (voice.lang === userLang) {
+      bestMatchIndex = index;
     }
 
-    if (speechSynthesis.onvoiceschanged !== undefined) {
-      speechSynthesis.onvoiceschanged = populateVoiceList;
-    } else {
-      setTimeout(populateVoiceList, 100);
+    if (voice.default) {
+      option.textContent += ' — DEFAULT';
     }
+
+    voiceSelect.appendChild(option);
+  });
+
+  voiceSelect.selectedIndex = bestMatchIndex;
+}
 
     function speak(text) {
       const utterance = new SpeechSynthesisUtterance(text);
