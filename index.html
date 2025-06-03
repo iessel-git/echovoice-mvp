@@ -162,14 +162,14 @@
       event.target.classList.add('active');
     }
 
-    
     function populateVoiceList() {
   voices = synth.getVoices();
   const voiceSelect = document.getElementById('voiceSelect');
   voiceSelect.innerHTML = '';
 
   const userLang = navigator.language || 'en-US';
-  let bestMatchIndex = 0;
+  let bestMatchIndex = -1;
+  let enUSIndex = -1;
 
   voices.forEach((voice, index) => {
     const option = document.createElement('option');
@@ -180,6 +180,10 @@
       bestMatchIndex = index;
     }
 
+    if (voice.lang === 'en-US' && enUSIndex === -1) {
+      enUSIndex = index;
+    }
+
     if (voice.default) {
       option.textContent += ' — DEFAULT';
     }
@@ -187,8 +191,16 @@
     voiceSelect.appendChild(option);
   });
 
-  voiceSelect.selectedIndex = bestMatchIndex;
+  // Set best match or fallback
+  if (bestMatchIndex !== -1) {
+    voiceSelect.selectedIndex = bestMatchIndex;
+  } else if (enUSIndex !== -1) {
+    voiceSelect.selectedIndex = enUSIndex;
+  } else {
+    voiceSelect.selectedIndex = 0; // fallback to first voice
+  }
 }
+    
 
     function speak(text) {
       const utterance = new SpeechSynthesisUtterance(text);
