@@ -197,7 +197,7 @@
 
     function handleInput() {
       const input = document.getElementById("userInput").value;
-      const output = `You said: "${input}"`;
+      const output = `"${input}"`;
       document.getElementById("responseOutput").innerText = output;
       speak(output);
     }
@@ -209,7 +209,7 @@
     }
 
     function createPhraseButtons() {
-      const phrases = ["Hello", "Thank you", "How are you?", "What time is it?", "Goodbye"];
+      const phrases = ["Hello", "Thank you", "How are you?", "What time is it?","Any updates","Are you sure", "Goodbye"];
       const container = document.getElementById("quickPhrases");
       phrases.forEach(phrase => {
         const btn = document.createElement("button");
